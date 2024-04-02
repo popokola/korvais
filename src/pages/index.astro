@@ -44,7 +44,7 @@ import Layout from '../layouts/Layout.astro';
     
     </section>
     </form>
-		<div id="output" class="flex flex-col gap-2 pt-4 text-center"></div>
+		<div id="output" class="flex flex-col gap-2 pt-4 text-center pb-16"></div>
 
 	</main>
 </Layout>
@@ -93,7 +93,7 @@ function calculateTalam() {
     options.forEach(function(option) {
       var talamCount = option[0];
       var X = option[1];
-      output += "Talam count: " + talamCount + ", X: " + X + ", Total beats: " + (talamCount * 3) + ", Total with beats: " + (talamCount * 3 + afterBeatCount) + "<br>";
+      output += "Talam count: " + talamCount + ", X avartana / round: " + X + ", Total beats: " + (talamCount * 3) + ", Total with beats: " + (talamCount * 3 + afterBeatCount) + "<br>";
     });
     document.getElementById("output").innerHTML = output;
   } else {
