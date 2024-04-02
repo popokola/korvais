@@ -1,0 +1,129 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Create And Find new Korvais!">
+	<main class="pt-[64px] px-8 mx-auto max-w-3xl text-zinc-800">
+		<h1 class="text-3xl text-center">Welcome to korvais</h1>
+    <p class="text-xl pt-12 pb-4">Enter the values:</p>
+
+    <form id="talamForm" class="flex flex-col">
+      <label for="talamCount" class="pt-2 pb-2">Talam Count:</label>
+      <input type="number" id="talamCount" name="talamCount" required class="block w-full text-center rounded-md border-0 py-1.5 text-zinc-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+      <label for="purvangam" class="pt-2 pb-2">Purvangam:</label>
+      <input type="number" id="purvangam" name="purvangam" required class="block w-full text-center rounded-md border-0 py-1.5 text-zinc-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+
+      <div id="advancedInputs" style="display:none;">
+        <label for="baseCount">Base Count:</label>
+        <input type="number" id="baseCount" name="baseCount" class="block w-full text-center rounded-md border-0 py-1.5 text-zinc-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+        <label for="afterBeatCount">After Beat Count:</label>
+        <input type="number" id="afterBeatCount" name="afterBeatCount" class="block w-full text-center rounded-md border-0 py-1.5 text-zinc-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+      </div>
+
+      <label for="mode" class="pt-2 pb-2">Mode:</label>
+      <select id="mode" name="mode" class="block w-full text-center rounded-md border-0 py-1.5 text-zinc-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+        <option value="normal" class="text-gray-700 block px-4 py-2 text-sm">Normal</option>
+        <option value="advanced" class="text-gray-700 block px-4 py-2 text-sm">Advanced</option>
+      </select>
+
+      <section class="flex flex-col gap-4 pt-6">
+      <button
+        type="button"
+        class="rounded bg-indigo-200 px-2 py-1 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-300 pt-1.5 pb-1.5"
+        onclick="calculateTalam()"
+      >
+        Calculate
+      </button>
+
+      <button
+        type="button"
+        class="rounded bg-red-200 px-2 py-1 text-sm font-semibold text-red-150 shadow-sm hover:bg-red-300 pt-1.5 pb-1.5"
+        onclick="resetOutput()">
+        Reset
+      </button>
+    
+    </section>
+    </form>
+		<div id="output" class="flex flex-col gap-2 pt-4 text-center"></div>
+
+	</main>
+</Layout>
+
+<script is:inline>
+
+function adjustToNearestDivisibleBy3(value) {
+  return value + (3 - value % 3) || value;
+}
+
+function findNumbers(talamCount, purvangam) {
+  purvangam = adjustToNearestDivisibleBy3(purvangam);
+  var uttarangam = talamCount - purvangam;
+  var output = "Talam: " + talamCount + ", Purvangam: " + purvangam + ", Uttarangam: " + uttarangam + "<br>";
+
+  output += "<b>Part A: PURVANGAM</b>";
+  for (var y = 0; y <= 10; y++) {
+    var x = (purvangam - 3 * y) / 3;
+    if (Number.isInteger(x) && x >= 0) {
+      output += "X = " + x + ", Y = " + y + "<br>";
+    }
+  }
+
+  output += "<b>Part B: UTTRANGAM</b>";
+  for (var y = 0; y <= 10; y++) {
+    var x = (uttarangam - 2 * y) / 3;
+    if (Number.isInteger(x) && x >= 0) {
+      output += "X = " + x + ", Y = " + y + "<br>";
+    }
+  }
+  
+  document.getElementById("output").innerHTML = output;
+
+}
+
+function calculateTalam() {
+  var talamCount = parseInt(document.getElementById("talamCount").value);
+  var purvangam = parseInt(document.getElementById("purvangam").value);
+  var mode = document.getElementById("mode").value;
+
+  if (mode === "advanced") {
+    var baseCount = parseInt(document.getElementById("baseCount").value);
+    var afterBeatCount = parseInt(document.getElementById("afterBeatCount").value);
+    var options = findTalamCount(baseCount, afterBeatCount);
+    var output = "Possible talam counts:" + "<br>";
+    options.forEach(function(option) {
+      var talamCount = option[0];
+      var X = option[1];
+      output += "Talam count: " + talamCount + ", X: " + X + ", Total beats: " + (talamCount * 3) + ", Total with beats: " + (talamCount * 3 + afterBeatCount) + "<br>";
+    });
+    document.getElementById("output").innerHTML = output;
+  } else {
+    findNumbers(talamCount, purvangam);
+  }
+}
+
+function findTalamCount(baseCount, afterBeatCount) {
+  var options = [];
+  for (var X = 1; X <= 10; X++) {
+    var totalBeats = 3 * baseCount * X + afterBeatCount;
+    if (totalBeats % afterBeatCount === 0) {
+      var talamCount = baseCount * X;
+      options.push([talamCount, X]);
+    }
+  }
+  return options;
+}
+
+function resetOutput() {
+  document.getElementById("output").innerHTML = "";
+}
+
+document.getElementById("mode").addEventListener("change", function() {
+  var advancedInputs = document.getElementById("advancedInputs");
+  if (this.value === "advanced") {
+    advancedInputs.style.display = "block";
+  } else {
+    advancedInputs.style.display = "none";
+  }
+});
+
+</script>
