@@ -34,7 +34,7 @@ import Layout from '../layouts/Layout.astro';
       >
         Calculate
       </button>
-
+   
       <button
         type="button"
         class="rounded bg-red-200 px-2 py-1 text-sm font-semibold text-red-150 shadow-sm hover:bg-red-300 pt-1.5 pb-1.5"
@@ -45,6 +45,7 @@ import Layout from '../layouts/Layout.astro';
     </section>
     </form>
 		<div id="output" class="flex flex-col gap-2 pt-4 text-center pb-16"></div>
+    <div id="formula1" class="flex flex-col gap-2 pt-4 text-center pb-16"></div>
 
 	</main>
 </Layout>
@@ -52,7 +53,7 @@ import Layout from '../layouts/Layout.astro';
 <script is:inline>
 
 function adjustToNearestDivisibleBy3(value) {
-  return value + (3 - value % 3) || value;
+  return value % 3 === 0 ?  value : value + (3 - value % 3);
 }
 
 function findNumbers(talamCount, purvangam) {
@@ -98,6 +99,7 @@ function calculateTalam() {
     document.getElementById("output").innerHTML = output;
   } else {
     findNumbers(talamCount, purvangam);
+    formula1(purvangam);
   }
 }
 
@@ -117,6 +119,43 @@ function resetOutput() {
   document.getElementById("output").innerHTML = "";
 }
 
+function formula1(purvangam) {
+  let x = adjustToNearestDivisibleBy3(purvangam);
+
+  if ((x - 4) <= 0) {
+    document.getElementById("formula1").innerText = "No Solution Found";
+    return;
+  }
+
+  const fragment = document.createDocumentFragment();
+  const container = document.createElement("div");
+  const title = document.createElement("b");
+  title.innerText = "Part A: PURVANGAM";
+  container.appendChild(title);
+
+  for (let y = 0; y <= 3; y++) {
+    const xValue = document.createElement("p");
+    xValue.innerText = "X = " + (x - y) + " 2";
+    container.appendChild(xValue);
+  }
+
+  fragment.appendChild(container);
+
+  const titlePartB = document.createElement("b");
+  titlePartB.innerText = "Part B: UTTRANGAM";
+  container.appendChild(titlePartB);
+
+  for (let y = 0; y <= 2; y++) {
+    const yValue = document.createElement("p");
+    yValue.innerText = "X = " + x;
+    container.appendChild(yValue);
+  }
+
+  document.getElementById("formula1").innerHTML = "";
+  document.getElementById("formula1").appendChild(fragment);
+}
+
+
 document.getElementById("mode").addEventListener("change", function() {
   var advancedInputs = document.getElementById("advancedInputs");
   if (this.value === "advanced") {
@@ -125,5 +164,6 @@ document.getElementById("mode").addEventListener("change", function() {
     advancedInputs.style.display = "none";
   }
 });
+
 
 </script>
