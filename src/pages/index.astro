@@ -89,6 +89,13 @@ function calculateTalam() {
   var purvangam = parseInt(document.getElementById("purvangam").value);
   var mode = document.getElementById("mode").value;
 
+  //check if the talamcount and or purvangam are defined
+  if (isNaN(talamCount) || isNaN(purvangam)) {
+    output = "Please enter valid numbers";
+    document.getElementById("output").innerHTML = output;
+    return;
+  }
+
   if (mode === "advanced") {
     var baseCount = parseInt(document.getElementById("baseCount").value);
     var afterBeatCount = parseInt(document.getElementById("afterBeatCount").value);
@@ -102,7 +109,7 @@ function calculateTalam() {
     document.getElementById("output").innerHTML = output;
   } else {
     findNumbers(talamCount, purvangam);
-    formula1(purvangam);
+    formula1(talamCount);
   }
 }
 
@@ -122,42 +129,54 @@ function resetOutput() {
   document.getElementById("output").innerHTML = "";
 }
 
-function formula1(baseCount) {
-  if ((baseCount - 4) <= 0) {
-    document.getElementById("formula1").innerText = "No Solution Found";
-    return;
+function findDicotomous(baseCount) {
+  var options = [];
+  for (let power = 0; Math.pow(2, power) <= baseCount; power++) {
+    let currentPower = Math.pow(2, power);
+    if (baseCount % currentPower === 0 && currentPower > 4) {
+      options.push(currentPower);
+    }
   }
+  return options;
+}
 
-
-  const fragment = document.createDocumentFragment();
+function formula1(baseCount) {
   const container = document.createElement("div");
   const h1 = document.createElement("h1");
   h1.innerText = "Formula 1";
   container.appendChild(h1);
-  const title = document.createElement("b");
-  title.innerText = "Part A: PURVANGAM";
-  container.appendChild(title);
 
-  for (let y = 0; y <= 3; y++) {
-    const xValue = document.createElement("p");
-    xValue.innerText = "X = " + (baseCount - y) + " 2";
-    container.appendChild(xValue);
+  if ((baseCount - 4) <= 0 || findDicotomous(baseCount).length === 0) {
+    const p = document.createElement("b");
+    p.innerText = "No Solution Found";
+    container.appendChild(p);
+  } else {
+    baseCount = findDicotomous(baseCount)[0];
+  
+    const title = document.createElement("b");
+    title.innerText = "Part A: PURVANGAM";
+    container.appendChild(title);
+  
+    for (let y = 0; y <= 4; y++) {
+      const xValue = document.createElement("p");
+      xValue.innerText = "X = " + (baseCount - y) + " 2";
+      container.appendChild(xValue);
+    }
+  
+    const titlePartB = document.createElement("b");
+    titlePartB.innerText = "Part B: UTTRANGAM";
+    container.appendChild(titlePartB);
+  
+    for (let y = 0; y <= 2; y++) {
+      const yValue = document.createElement("p");
+      yValue.innerText = "X = " + baseCount;
+      container.appendChild(yValue);
+    }
   }
 
-  fragment.appendChild(container);
-
-  const titlePartB = document.createElement("b");
-  titlePartB.innerText = "Part B: UTTRANGAM";
-  container.appendChild(titlePartB);
-
-  for (let y = 0; y <= 2; y++) {
-    const yValue = document.createElement("p");
-    yValue.innerText = "X = " + baseCount;
-    container.appendChild(yValue);
-  }
-
-  document.getElementById("formula1").innerHTML = "";
-  document.getElementById("formula1").appendChild(fragment);
+  const formula1Element = document.getElementById("formula1");
+  formula1Element.innerHTML = "";
+  formula1Element.appendChild(container);
 }
 
 
@@ -173,5 +192,4 @@ document.getElementById("mode").addEventListener("change", function() {
     basicInputs.classList.toggle('hidden');
   }
 });
-g
 </script>
