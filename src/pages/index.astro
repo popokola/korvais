@@ -8,12 +8,14 @@ import Layout from '../layouts/Layout.astro';
     <p class="text-xl pt-12 pb-4">Enter the values:</p>
 
     <form id="talamForm" class="flex flex-col">
-      <label for="talamCount" class="pt-2 pb-2">Talam Count:</label>
-      <input type="number" id="talamCount" name="talamCount" required class="block w-full text-center rounded-md border-0 py-1.5 text-zinc-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-      <label for="purvangam" class="pt-2 pb-2">Purvangam:</label>
-      <input type="number" id="purvangam" name="purvangam" required class="block w-full text-center rounded-md border-0 py-1.5 text-zinc-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+      <div id="basicInputs">
+        <label for="talamCount" class="pt-2 pb-2">Talam Count:</label>
+        <input type="number" id="talamCount" name="talamCount" required class="block w-full text-center rounded-md border-0 py-1.5 text-zinc-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+        <label for="purvangam" class="pt-2 pb-2">Purvangam:</label>
+        <input type="number" id="purvangam" name="purvangam" required class="block w-full text-center rounded-md border-0 py-1.5 text-zinc-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+      </div>
 
-      <div id="advancedInputs" style="display:none;">
+      <div id="advancedInputs" class="hidden">
         <label for="baseCount">Base Count:</label>
         <input type="number" id="baseCount" name="baseCount" class="block w-full text-center rounded-md border-0 py-1.5 text-zinc-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
         <label for="afterBeatCount">After Beat Count:</label>
@@ -34,18 +36,20 @@ import Layout from '../layouts/Layout.astro';
       >
         Calculate
       </button>
-   
+
       <button
         type="button"
         class="rounded bg-red-200 px-2 py-1 text-sm font-semibold text-red-150 shadow-sm hover:bg-red-300 pt-1.5 pb-1.5"
         onclick="resetOutput()">
         Reset
       </button>
-    
+
     </section>
     </form>
-		<div id="output" class="flex flex-col gap-2 pt-4 text-center pb-16"></div>
-    <div id="formula1" class="flex flex-col gap-2 pt-4 text-center pb-16"></div>
+		<div id="output" class="flex flex-col gap-2 pt-4 text-center pb-8">
+      <!-- findnumbers -->
+    </div>
+    <div id="formula1" class="flex flex-col gap-2 pt-4 text-center pb-8"></div>
 
 	</main>
 </Layout>
@@ -76,9 +80,8 @@ function findNumbers(talamCount, purvangam) {
       output += "X = " + x + ", Y = " + y + "<br>";
     }
   }
-  
-  document.getElementById("output").innerHTML = output;
 
+  document.getElementById("output").innerHTML = output;
 }
 
 function calculateTalam() {
@@ -119,23 +122,25 @@ function resetOutput() {
   document.getElementById("output").innerHTML = "";
 }
 
-function formula1(purvangam) {
-  let x = adjustToNearestDivisibleBy3(purvangam);
-
-  if ((x - 4) <= 0) {
+function formula1(baseCount) {
+  if ((baseCount - 4) <= 0) {
     document.getElementById("formula1").innerText = "No Solution Found";
     return;
   }
 
+
   const fragment = document.createDocumentFragment();
   const container = document.createElement("div");
+  const h1 = document.createElement("h1");
+  h1.innerText = "Formula 1";
+  container.appendChild(h1);
   const title = document.createElement("b");
   title.innerText = "Part A: PURVANGAM";
   container.appendChild(title);
 
   for (let y = 0; y <= 3; y++) {
     const xValue = document.createElement("p");
-    xValue.innerText = "X = " + (x - y) + " 2";
+    xValue.innerText = "X = " + (baseCount - y) + " 2";
     container.appendChild(xValue);
   }
 
@@ -147,7 +152,7 @@ function formula1(purvangam) {
 
   for (let y = 0; y <= 2; y++) {
     const yValue = document.createElement("p");
-    yValue.innerText = "X = " + x;
+    yValue.innerText = "X = " + baseCount;
     container.appendChild(yValue);
   }
 
@@ -157,13 +162,16 @@ function formula1(purvangam) {
 
 
 document.getElementById("mode").addEventListener("change", function() {
-  var advancedInputs = document.getElementById("advancedInputs");
+  const basicInputs = document.getElementById('basicInputs');
+  const advancedInputs = document.getElementById("advancedInputs");
   if (this.value === "advanced") {
-    advancedInputs.style.display = "block";
+    advancedInputs.classList.toggle('hidden');
+    basicInputs.classList.toggle('hidden');
+
   } else {
-    advancedInputs.style.display = "none";
+    advancedInputs.classList.toggle('hidden');
+    basicInputs.classList.toggle('hidden');
   }
 });
-
-
+g
 </script>
