@@ -20,10 +20,14 @@ import Layout from '../layouts/Layout.astro';
       </div>
 
       <div id="advancedInputs" class="hidden">
-        <label for="baseCount">Base Count:</label>
-        <input type="number" id="baseCount" name="baseCount" class="block w-full text-center rounded-md border-0 py-1.5 text-zinc-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-        <label for="afterBeatCount">After Beat Count:</label>
-        <input type="number" id="afterBeatCount" name="afterBeatCount" class="block w-full text-center rounded-md border-0 py-1.5 text-zinc-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+        <div class="flex flex-col">
+          <label for="baseCount" class="py-2">Base Count:</label>
+          <input type="number" id="baseCount" name="baseCount" class="block w-full text-center rounded-md border-0 py-1.5 text-zinc-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+        </div>
+        <div class="flex flex-col">
+          <label for="afterBeatCount" class="py-2">After Beat Count:</label>
+          <input type="number" id="afterBeatCount" name="afterBeatCount" class="block w-full text-center rounded-md border-0 py-1.5 text-zinc-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+        </div>
       </div>
 
       <label for="mode" class="pt-2 pb-2">Mode:</label>
@@ -93,16 +97,14 @@ function calculateTalam() {
   var purvangam = parseInt(document.getElementById("purvangam").value);
   var mode = document.getElementById("mode").value;
 
-  //check if the talamcount and or purvangam are defined
-  if (isNaN(talamCount) || isNaN(purvangam)) {
-    output = "Please enter valid numbers";
-    document.getElementById("output").innerHTML = output;
-    return;
-  }
-
   if (mode === "advanced") {
     var baseCount = parseInt(document.getElementById("baseCount").value);
     var afterBeatCount = parseInt(document.getElementById("afterBeatCount").value);
+    if (isNaN(baseCount) || isNaN(afterBeatCount)) {
+      output = "Please enter valid numbers";
+      document.getElementById("output").innerHTML = output;
+      return;
+    }
     var options = findTalamCount(baseCount, afterBeatCount);
     var output = "Possible talam counts:" + "<br>";
     options.forEach(function(option) {
@@ -112,6 +114,11 @@ function calculateTalam() {
     });
     document.getElementById("output").innerHTML = output;
   } else {
+    if (isNaN(talamCount) || isNaN(purvangam)) {
+      output = "Please enter valid numbers";
+      document.getElementById("output").innerHTML = output;
+      return;
+    }
     findNumbers(talamCount, purvangam);
     formula1(talamCount);
   }
@@ -131,16 +138,21 @@ function findTalamCount(baseCount, afterBeatCount) {
 
 function resetOutput() {
   document.getElementById("output").innerHTML = "";
+  document.getElementById("formula1").innerHTML = "";
 }
 
 function findDicotomous(baseCount) {
   var options = [];
-  for (let power = 0; Math.pow(2, power) <= baseCount; power++) {
-    let currentPower = Math.pow(2, power);
-    if (baseCount % currentPower === 0 && currentPower > 4) {
-      options.push(currentPower);
+  while (baseCount > 1) {
+    if (Number.isInteger(baseCount)) {
+      options.push(baseCount);
+      baseCount /= 2;
+    } else {
+      break;
     }
   }
+  options = options.filter(number => number > 4);
+  options.sort((a, b) => a - b);
   return options;
 }
 
