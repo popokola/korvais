@@ -3,8 +3,8 @@ import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout title="Create And Find new Korvais!">
-	<main class="pt-[64px] px-8 mx-auto max-w-3xl text-zinc-800">
-		<h1 class="text-3xl text-center">Welcome to korvais</h1>
+  <main class="pt-[64px] px-8 mx-auto max-w-3xl text-zinc-800">
+    <h1 class="text-3xl text-center">Welcome to korvais</h1>
     <p class="text-xl pt-12 pb-4">Enter the values:</p>
 
     <form id="talamForm" class="flex flex-col">
@@ -14,8 +14,8 @@ import Layout from '../layouts/Layout.astro';
           <input type="number" id="talamCount" name="talamCount" required class="block w-full text-center rounded-md border-0 py-1.5 text-zinc-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
         </div> 
         <div class="flex flex-col">
-        <label for="purvangam" class="py-2">Purvangam:</label>
-        <input type="number" id="purvangam" name="purvangam" required class="block w-full text-center rounded-md border-0 py-1.5 text-zinc-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+          <label for="purvangam" class="py-2">Purvangam:</label>
+          <input type="number" id="purvangam" name="purvangam" required class="block w-full text-center rounded-md border-0 py-1.5 text-zinc-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
         </div>
       </div>
 
@@ -30,37 +30,51 @@ import Layout from '../layouts/Layout.astro';
         </div>
       </div>
 
+       <!-- New inputs for specific mode -->
+      <div id="specificInputs" class="hidden flex flex-col">
+        <div class="flex flex-col">
+          <label for="purvangam" class="py-2">Purvangam:</label>
+          <input type="number" id="purvangamSpecific" name="purvangamSpecific" required class="block w-full text-center rounded-md border-0 py-1.5 text-zinc-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+        </div>
+        <div class="flex flex-col">
+          <label for="uttarangam" class="py-2">Uttarangam:</label>
+          <input type="number" id="uttarangam" name="uttarangam" required class="block w-full text-center rounded-md border-0 py-1.5 text-zinc-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+        </div>
+      </div>
+
       <label for="mode" class="pt-2 pb-2">Mode:</label>
       <select id="mode" name="mode" class="block w-full text-center rounded-md border-0 py-1.5 text-zinc-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
         <option value="normal" class="text-gray-700 block px-4 py-2 text-sm">Normal</option>
         <option value="advanced" class="text-gray-700 block px-4 py-2 text-sm">Advanced</option>
+        <option value="specific" class="text-gray-700 block px-4 py-2 text-sm">Specific</option> <!-- New specific mode -->
       </select>
 
       <section class="flex flex-col gap-4 pt-6">
-      <button
-        type="button"
-        class="rounded bg-indigo-200 px-2 py-1 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-300 pt-1.5 pb-1.5"
-        onclick="calculateTalam()"
-      >
-        Calculate
-      </button>
+        <button
+          type="button"
+          class="rounded bg-indigo-200 px-2 py-1 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-300 pt-1.5 pb-1.5"
+          onclick="calculateTalam()"
+        >
+          Calculate
+        </button>
 
-      <button
-        type="button"
-        class="rounded bg-red-200 px-2 py-1 text-sm font-semibold text-red-150 shadow-sm hover:bg-red-300 pt-1.5 pb-1.5"
-        onclick="resetOutput()">
-        Reset
-      </button>
-
-    </section>
+        <button
+          type="button"
+          class="rounded bg-red-200 px-2 py-1 text-sm font-semibold text-red-150 shadow-sm hover:bg-red-300 pt-1.5 pb-1.5"
+          onclick="resetOutput()">
+          Reset
+        </button>
+      </section>
     </form>
-		<div id="output" class="flex flex-col gap-2 pt-4 text-center pb-8">
+
+    <div id="output" class="flex flex-col gap-2 pt-4 text-center pb-8">
       <!-- findnumbers -->
     </div>
     <div id="formula1" class="flex flex-col gap-2 pt-4 text-center pb-8"></div>
-
-	</main>
+  </main>
 </Layout>
+
+
 
 <script is:inline>
 
@@ -91,7 +105,6 @@ function findNumbers(talamCount, purvangam) {
 
   document.getElementById("output").innerHTML = output;
 }
-
 function calculateTalam() {
   var talamCount = parseInt(document.getElementById("talamCount").value);
   var purvangam = parseInt(document.getElementById("purvangam").value);
@@ -113,7 +126,49 @@ function calculateTalam() {
       output += "Talam count: " + talamCount + ", X avartana / round: " + X + ", Total beats: " + (talamCount * 3) + ", Total with beats: " + (talamCount * 3 + afterBeatCount) + "<br>";
     });
     document.getElementById("output").innerHTML = output;
-  } else {
+  }else if (mode === "specific") {
+    var purvangamSpecific = parseInt(document.getElementById("purvangamSpecific").value);
+    var uttarangam = parseInt(document.getElementById("uttarangam").value);
+
+    if (isNaN(purvangamSpecific) || isNaN(uttarangam)) {
+      output = "Please enter valid numbers";
+      document.getElementById("output").innerHTML = output;
+      return;
+    }
+
+    var purvangamPossibilities = generatePurvangamSeries(purvangamSpecific);
+    var uttarangamPossibilities = generateUttarangamSeries(uttarangam);
+
+    var output = "<b>Purvangam Possibilities:</b><br>";
+    for (var multiplier in purvangamPossibilities) {
+        if (purvangamPossibilities[multiplier].length > 0) {
+            output += `<b>Multiplier = ${multiplier}:</b><br>`;
+            purvangamPossibilities[multiplier].slice(0, 3).forEach(function (possibility) {
+                output += possibility + "<br>";
+            });
+            if (purvangamPossibilities[multiplier].length > 3) {
+                output += `<button onclick="showMore('purvangam', ${multiplier})">More</button><br>`;
+                output += `<div id="more-purvangam-${multiplier}"></div>`;  // Placeholder div
+            }
+        }
+    }
+
+    output += "<b>Uttarangam Possibilities:</b><br>";
+    for (var multiplier in uttarangamPossibilities) {
+        if (uttarangamPossibilities[multiplier].length > 0) {
+            output += `<b>Multiplier = ${multiplier}:</b><br>`;
+            uttarangamPossibilities[multiplier].slice(0, 3).forEach(function (possibility) {
+                output += possibility + "<br>";
+            });
+            if (uttarangamPossibilities[multiplier].length > 3) {
+                output += `<button onclick="showMore('uttarangam', ${multiplier})">More</button><br>`;
+                output += `<div id="more-uttarangam-${multiplier}"></div>`;  // Placeholder div
+            }
+        }
+    }
+
+    document.getElementById("output").innerHTML = output;
+}else {
     if (isNaN(talamCount) || isNaN(purvangam)) {
       output = "Please enter valid numbers";
       document.getElementById("output").innerHTML = output;
@@ -123,6 +178,101 @@ function calculateTalam() {
     formula1(talamCount);
   }
 }
+
+function showMore(type, multiplier) {
+    var possibilities;
+    if (type === 'purvangam') {
+        possibilities = generatePurvangamSeries(parseInt(document.getElementById("purvangamSpecific").value));
+    } else if (type === 'uttarangam') {
+        possibilities = generateUttarangamSeries(parseInt(document.getElementById("uttarangam").value));
+    }
+
+    var additionalOutput = "";
+    possibilities[multiplier].slice(3).forEach(function (possibility) {
+        additionalOutput += possibility + "<br>";
+    });
+
+    var moreDiv = document.getElementById("more-" + type + "-" + multiplier);
+    if (moreDiv) {
+        moreDiv.innerHTML = additionalOutput;
+    }
+
+    // Remove the "More" button after displaying more possibilities
+    var buttons = document.querySelectorAll(`button[onclick="showMore('${type}', ${multiplier})"]`);
+    buttons.forEach(button => button.style.display = 'none');
+}
+
+
+function generatePurvangamSeries(purvangam) {
+  var possibilities = {
+    3: [],
+    6: [],
+    9: []
+  };
+
+  var multipliers = [3, 6, 9];
+
+  for (var A = 3; A <= 19; A++) {
+    for (var multiplier of multipliers) {
+      for (var K = 0; K <= 10; K++) {
+        var value = A * multiplier + 3 * K;
+        if (value === purvangam) {
+          possibilities[multiplier].push(`A = ${A}, K = ${K}, Multiplier = ${multiplier}, Value = ${value}`);
+        }
+      }
+    }
+  }
+
+  // If no exact matches are found, add nearby possibilities (within a tolerance of 3)
+  for (var A = 3; A <= 19; A++) {
+    for (var multiplier of multipliers) {
+      for (var K = 0; K <= 10; K++) {
+        var value = A * multiplier + 3 * K;
+        if (Math.abs(value - purvangam) <= 3 && possibilities[multiplier].length === 0) {
+          possibilities[multiplier].push(`A = ${A}, K = ${K}, Multiplier = ${multiplier}, Value = ${value}`);
+        }
+      }
+    }
+  }
+
+  return possibilities;
+}
+
+function generateUttarangamSeries(uttarangam) {
+  var possibilities = {
+    3: [],
+    6: [],
+    9: []
+  };
+
+  var multipliers = [3, 6, 9];
+
+  for (var A = 3; A <= 19; A++) {
+    for (var multiplier of multipliers) {
+      for (var K = 0; K <= 10; K++) {
+        var value = A * multiplier + 2 * K;
+        if (value === uttarangam) {
+          possibilities[multiplier].push(`A = ${A}, K = ${K}, Multiplier = ${multiplier}, Value = ${value}`);
+        }
+      }
+    }
+  }
+
+  // If no exact matches are found, add nearby possibilities (within a tolerance of 3)
+  for (var A = 3; A <= 19; A++) {
+    for (var multiplier of multipliers) {
+      for (var K = 0; K <= 10; K++) {
+        var value = A * multiplier + 2 * K;
+        if (Math.abs(value - uttarangam) <= 3 && possibilities[multiplier].length === 0) {
+          possibilities[multiplier].push(`A = ${A}, K = ${K}, Multiplier = ${multiplier}, Value = ${value}`);
+        }
+      }
+    }
+  }
+
+  return possibilities;
+}
+
 
 function findTalamCount(baseCount, afterBeatCount) {
   var options = [];
@@ -195,17 +345,24 @@ function formula1(baseCount) {
   formula1Element.appendChild(container);
 }
 
-
 document.getElementById("mode").addEventListener("change", function() {
   const basicInputs = document.getElementById('basicInputs');
   const advancedInputs = document.getElementById("advancedInputs");
-  if (this.value === "advanced") {
-    advancedInputs.classList.toggle('hidden');
-    basicInputs.classList.toggle('hidden');
+  const specificInputs = document.getElementById("specificInputs");
 
+  // Hide all input sections initially
+  basicInputs.classList.add('hidden');
+  advancedInputs.classList.add('hidden');
+  specificInputs.classList.add('hidden');
+
+  // Toggle visibility based on selected mode
+  if (this.value === "advanced") {
+    advancedInputs.classList.remove('hidden');
+  } else if (this.value === "specific") {
+    specificInputs.classList.remove('hidden');
   } else {
-    advancedInputs.classList.toggle('hidden');
-    basicInputs.classList.toggle('hidden');
+    basicInputs.classList.remove('hidden');
   }
 });
+
 </script>
